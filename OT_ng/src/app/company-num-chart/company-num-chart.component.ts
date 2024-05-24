@@ -34,9 +34,9 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit{
   occupationNum:any[] = []
 
   //post business name
-  b_bigName = [];
-  b_midName = [];
-  b_smallName = [];
+  b_bigName = ["文化、運動、休閒及其他服務業"];
+  b_midName = ["陸上運輸業"];
+  b_smallName = ["石油製品、燃料零售業"];
   b_detailName = ["室內輕鋼架工程業", "水產品批發業", "日常用品批發業", "日常用品零售業", "一般廣告服務業"];
 
   ngOnInit(): void {
@@ -183,6 +183,7 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit{
       */
       // console.log("data:", data);
 
+      console.time('time of post getOccupationNum');
       // get occuaption number
       this.service.getOccupationNum().pipe(
         map(response => {
@@ -193,6 +194,8 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit{
 
           xAxis.data.setAll(data);
           series.data.setAll(data);
+
+          console.timeEnd('time of post getOccupationNum');
         })
       ).subscribe();
 

@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', test_view),
     path('businessName/', getBusinessName),
-    path('businessNum/', BusinessNum)
+    path('dismissName/', getDismissName),
+    path('businessNum/', BusinessNum),
+    path('dismissNum/', DismissNum)
 ]

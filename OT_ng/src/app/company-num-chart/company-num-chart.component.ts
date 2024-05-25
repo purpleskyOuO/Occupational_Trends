@@ -1,4 +1,4 @@
-import { Component, Inject, NgZone, OnInit, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, NgZone, OnInit, AfterViewInit, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { map } from 'rxjs/operators';
 
 
@@ -16,7 +16,7 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
   templateUrl: './company-num-chart.component.html',
   styleUrl: './company-num-chart.component.css'
 })
-export class CompanyNumChartComponent implements OnInit, AfterViewInit{
+export class CompanyNumChartComponent implements OnInit, AfterViewInit, OnDestroy{
   private root!: am5.Root;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private service: ServicesService) {}
@@ -31,20 +31,21 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit{
   }
 
   // get data
+  // occupationNum = [{occupation:string, value:number}]
   occupationNum:any[] = []
 
   //post business name
-  b_bigName = ["文化、運動、休閒及其他服務業"];
+  b_bigName = ["文化、運動、休閒及其他服務業", "農、林、漁、牧業"];
   b_midName = ["陸上運輸業"];
   b_smallName = ["石油製品、燃料零售業"];
   b_detailName = ["室內輕鋼架工程業", "水產品批發業", "日常用品批發業", "日常用品零售業", "一般廣告服務業"];
 
   ngOnInit(): void {
     const postBusinessName = {
-      big : this.b_bigName,
-      mid : this.b_midName,
-      small : this.b_smallName,
-      detail : this.b_detailName
+      big: this.b_bigName,
+      mid: this.b_midName,
+      small: this.b_smallName,
+      detail: this.b_detailName
     }
 
     // post business name

@@ -18,9 +18,10 @@ class Company(models.Model):
 
 class NetManager(models.Manager):
     def get_BusinessNum(self, name):
+        # name = {big:[str], mid:[str], small:[str], detail:[str]}
         cursor = connection.cursor()
         
-        businessNum = []
+        businessNum = []  # businessNum[{occupation:str, value:int}]
         
         try:
             if len(name['big']) > 0:
@@ -122,7 +123,55 @@ class NetManager(models.Manager):
         WHERE CC.tax_id = C.tax_id AND (C.status = '核准登記' OR C.status = '核准設立')
         GROUP BY CC.code;
         """
-                
+ 
+    def get_DismissNum(self, name):
+        # name = {name:str, category:str}
+        cursor = connection.cursor()
+        
+        dismissNum = []  # dismissNum = [{year:int, month:int(month-1), value:int}]
+        
+        # 初始化dimissNum
+        sql = 'SELECT month FROM `company_dismiss` GROUP BY month ORDER BY month;'
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        months = [r[0] for r in rows]  # months = [yyyymm]
+        for month in months:
+            dismissNum.append({
+                'yaer': int(month/100),
+                'month': month%100,
+                'value': 0
+            })
+        
+        try:
+            # 取得該名字的codes
+            sql = f'SELECT id FROM business_category WHERE {name["category"]}_name="{name["name"]}";'
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            codes = [r[0] for r in rows]
+            
+            # 取得各code的月解散公司數量
+            for code in codes:
+                sql = f"""SELECT month, COUNT(month)
+                FROM `company_category` AS CC
+                INNER JOIN `company_dismiss` AS CD
+                ON CC.tax_id = CD.tax_id
+                WHERE CC.code = "{code}"
+                GROUP BY month
+                """
+                cursor.execute(sql)
+                rows = cursor.fetchall()  # row[0] = yyymm, row[1] = count
+                for row in rows:
+                    dismissMonth = next((d for d in dismissNum if d['year'] == int(row[0]/100) and d["month"] == row[0]%100), None)
+                    if dismissMonth:
+                        dismissMonth['value'] += row[1]
+                        
+        except Exception as e:
+            print(e)
+           
+        result = {"result": dismissNum}  # 直接构建字典
+        return result
+        
+                     
                    
 class Get_OT(models.Model):
     netmanager = NetManager()   

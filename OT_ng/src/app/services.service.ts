@@ -13,8 +13,16 @@ export class ServicesService {
     return this.httpClient.post<any>('http://127.0.0.1:8000/businessName/', data);
   }
 
+  postDismissName(data: any): Observable<any> {
+    return this.httpClient.post<any>('http://127.0.0.1:8000/dismissName/', data);
+  }
+
   // get number of occupation
   getOccupationNum(): Observable<any> {
     return this.httpClient.get('http://127.0.0.1:8000/businessNum/', { responseType: 'text' });
+  }
+
+  getDismissNum(): Observable<any> {
+    return this.httpClient.get('http://127.0.0.1:8000/dismissNum/', { responseType: 'text' });
   }
 }

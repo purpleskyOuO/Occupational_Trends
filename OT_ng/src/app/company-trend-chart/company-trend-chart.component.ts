@@ -32,8 +32,8 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
   }
 
   // get data
-  // occupationTrend = [{date:Date, value:number}]
-  occupationTrend:any[] = []
+  // dismissNum = [{year:number, month:number, value:number}]
+  dismissNum:any[] = []
 
   // post dismiss name
   name = "廚具、衛浴設備安裝工程業";
@@ -45,8 +45,8 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
       category: this.category
     }
 
-    // post business name
-    this.service.postBusinessName(postDismissName).pipe(
+    // post dismiss name
+    this.service.postDismissName(postDismissName).pipe(
       map(response => {
         console.log('Post of dismissName created successfully:', response);
       })
@@ -88,28 +88,6 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
         behavior: "zoomX"
       }));
       cursor.lineY.set("visible", false);
-
-      let date = new Date();
-      date.setHours(0, 0, 0, 0);
-      date.setFullYear(2000, 0)
-      let value = 100;
-
-      function generateData() {
-        value = Math.round((Math.random() * 10 - 5) + value);
-        am5.time.add(date, "month", 1);
-        return {
-          date: date.getTime(),
-          value: value
-        };
-      }
-
-      function generateDatas(count: any) {
-        var data = [];
-        for (var i = 0; i < count; ++i) {
-          data.push(generateData());
-        }
-        return data;
-      }
 
       // Create axes
       // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
@@ -159,9 +137,45 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
         orientation: "horizontal"
       }));
 
+      /*
+      let date = new Date();
+      date.setHours(0, 0, 0, 0);
+      date.setFullYear(2000, 0);
+      let value = 100;
+
+      function generateData() {
+        value = Math.round((Math.random() * 10 - 5) + value);
+        am5.time.add(date, "month", 1);
+        return {
+          date: date.getTime(),
+          value: value
+        };
+      }
+
+      function generateDatas(count: any) {
+        var data = [];
+        for (var i = 0; i < count; ++i) {
+          data.push(generateData());
+        }
+        return data;
+      }
+
       var data = generateDatas(30);
       series.data.setAll(data);
+      */
+      
+      // get dismiss company number
+      this.service.getDismissNum().pipe(
+        map(response => {
+          this.dismissNum = this.reformat_DismissNum(response);
+          //console.log('response:', response);
+          console.log('response:', this.dismissNum);
+          let data = this.dismissNum;
 
+          series.data.setAll(data);
+
+        })
+      ).subscribe();
 
       // Make stuff animate on load
       // https://www.amcharts.com/docs/v5/concepts/animations/
@@ -179,5 +193,42 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
         this.root.dispose();
       }
     });
+  }
+
+  reformat_DismissNum(post: string){
+    var temp:any;
+
+    var re = /&#x27;/gi;
+    temp = post.replace(re, '');
+    re = /result: /gi;
+    temp = temp.replace(re, '');
+    temp = temp.replace("{[{", '').replace("}]}", '');
+    re = /{/gi;
+    temp = temp.replace(re, '')
+    let tempstring:string[] = temp.split('}, ');
+
+    let templist:any[] = [];
+
+    tempstring.forEach(e => {
+      let t_list:string[];
+      t_list = e.split(", ");
+      console.log(t_list);
+      var t_y = Number(t_list[0].replace("year: ", ''));
+      var t_m = Number(t_list[1].replace("month: ", ''));
+      var t_v = Number(t_list[2].replace("value: ", ''));
+
+      var date = new Date();
+      date.setHours(0, 0, 0, 0);
+      date.setFullYear(t_y, t_m-1)
+
+      templist.push(
+        {
+          date: date.getTime(),
+          value: t_v
+        }
+      )
+    });
+
+    return templist;
   }
 }

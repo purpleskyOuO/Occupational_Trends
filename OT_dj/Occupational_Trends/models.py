@@ -137,11 +137,10 @@ class NetManager(models.Manager):
         months = [r[0] for r in rows]  # months = [yyyymm]
         for month in months:
             dismissNum.append({
-                'yaer': int(month/100),
+                'year': int(month/100),
                 'month': month%100,
                 'value': 0
             })
-        
         try:
             # 取得該名字的codes
             sql = f'SELECT id FROM business_category WHERE {name["category"]}_name="{name["name"]}";'
@@ -161,10 +160,17 @@ class NetManager(models.Manager):
                 cursor.execute(sql)
                 rows = cursor.fetchall()  # row[0] = yyymm, row[1] = count
                 for row in rows:
-                    dismissMonth = next((d for d in dismissNum if d['year'] == int(row[0]/100) and d["month"] == row[0]%100), None)
+                    dismissMonth = next((d for d in dismissNum if d["year"] == int(row[0]/100) and d["month"] == row[0]%100), None)
+                    
                     if dismissMonth:
                         dismissMonth['value'] += row[1]
-                        
+                    
+                    # for d in dismissNum:
+                    #     print(d)
+                    #     if int(row[0]/100) == d['year'] and row[0]%100 == d['month']:
+                    #         d['value'] += row[1]
+                    #         break
+                                                
         except Exception as e:
             print(e)
            

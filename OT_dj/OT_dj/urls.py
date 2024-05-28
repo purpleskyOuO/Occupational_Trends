@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', test_view),
     path('businessName/', getBusinessName),
-    path('dismissName/', getDismissName),
+    path('trendName/', getTrendName),
     path('businessNum/', BusinessNum),
+    path('establishNum/', EstablishNum),
     path('dismissNum/', DismissNum)
 ]

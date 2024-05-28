@@ -176,6 +176,60 @@ class NetManager(models.Manager):
            
         result = {"result": dismissNum}  # 直接构建字典
         return result
+    
+    def get_EstablishNum(self, name):
+        # name = {name:str, category:str}
+        cursor = connection.cursor()
+        
+        establishNum = []  # establishNum = [{year:int, month:int(month-1), value:int}]
+        
+        # 初始化dimissNum
+        sql = 'SELECT month FROM `company_establishment` GROUP BY month ORDER BY month;'
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        months = [r[0] for r in rows]  # months = [yyyymm]
+        for month in months:
+            establishNum.append({
+                'year': int(month/100),
+                'month': month%100,
+                'value': 0
+            })
+        try:
+            # 取得該名字的codes
+            # sql = f'SELECT id FROM business_category WHERE {name["category"]}_name="{name["name"]}";'
+            sql = f'SELECT id FROM business_category WHERE detail_name="廚具、衛浴設備安裝工程業";'
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            codes = [r[0] for r in rows]
+            
+            # 取得各code的月解散公司數量
+            for code in codes:
+                sql = f"""SELECT month, COUNT(month)
+                FROM `company_category` AS CC
+                INNER JOIN `company_establishment` AS CE
+                ON CC.tax_id = CE.tax_id
+                WHERE CC.code = "{code}"
+                GROUP BY month
+                """
+                cursor.execute(sql)
+                rows = cursor.fetchall()  # row[0] = yyymm, row[1] = count
+                for row in rows:
+                    establishMonth = next((e for e in establishNum if e["year"] == int(row[0]/100) and e["month"] == row[0]%100), None)
+                    
+                    if establishMonth:
+                        establishMonth['value'] += row[1]
+                    
+                    # for e in establishNum:
+                    #     print(e)
+                    #     if int(row[0]/100) == e['year'] and row[0]%100 == e['month']:
+                    #         e['value'] += row[1]
+                    #         break
+                                                
+        except Exception as e:
+            print(e)
+           
+        result = {"result": establishNum}  # 直接构建字典
+        return result
         
                      
                    

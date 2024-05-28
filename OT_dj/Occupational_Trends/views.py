@@ -8,7 +8,7 @@ import json
 
 # global receive data
 businessName = {}
-dismissName = {}
+trendName = {}
 
 # Create your views here.
 def test_view(request):
@@ -45,34 +45,38 @@ def getBusinessName(request):
 @csrf_exempt
 # @require_POST
 @api_view(['GET', 'POST'])
-def getDismissName(request):
+def getTrendName(request):
     if request.method == 'POST':
         try:
             # 解析收到的 JSON 数据
             data = json.loads(request.body.decode('utf-8'))
-            global dismissName
-            dismissName = data
+            global trendName
+            trendName = data
             # print('data:')
             # print(data)
             
             # 返回成功响应
-            return JsonResponse({'message': 'Post of dismissName created successfully'})
+            return JsonResponse({'message': 'Post of trendName created successfully'})
         except Exception as e:
             # 处理错误情况
             return JsonResponse({'error': str(e)}, status=500)
     
     elif request.method == 'GET':
         # print('get')
-        result = dismissName
+        result = trendName
         # print(result)
-        return render(request, 'dismissName.html', {'result': result})
+        return render(request, 'trendName.html', {'result': result})
     
     
 def BusinessNum(request):
     businessNum = Get_OT.netmanager.get_BusinessNum(businessName)
     return render(request, 'businessNum.html', {'businessNum': businessNum})
+
+def EstablishNum(request):
+    establishNum = Get_OT.netmanager.get_EstablishNum(trendName)
+    return render(request, 'establishNum.html', {'establishNum': establishNum})
     
 def DismissNum(request):
-    dismissNum = Get_OT.netmanager.get_DismissNum(dismissName)
+    dismissNum = Get_OT.netmanager.get_DismissNum(trendName)
     return render(request, 'dismissNum.html', {'dismissNum': dismissNum})
     

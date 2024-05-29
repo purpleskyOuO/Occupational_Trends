@@ -9,6 +9,9 @@ import json
 # global receive data
 businessName = {}
 trendName = {}
+raceName = {}
+
+raceTrend = ""
 
 # Create your views here.
 def test_view(request):
@@ -67,6 +70,31 @@ def getTrendName(request):
         # print(result)
         return render(request, 'trendName.html', {'result': result})
     
+@csrf_exempt
+# @require_POST
+@api_view(['GET', 'POST'])
+def getRaceName(request):
+    if request.method == 'POST':
+        try:
+            # 解析收到的 JSON 数据
+            data = json.loads(request.body.decode('utf-8'))
+            global raceName, raceTrend
+            raceName = data['name']
+            raceTrend = data['trend']
+            # print('data:')
+            # print(data)
+            
+            # 返回成功响应
+            return JsonResponse({'message': 'Post of raceName created successfully'})
+        except Exception as e:
+            # 处理错误情况
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    elif request.method == 'GET':
+        # print('get')
+        # print(result)
+        return render(request, 'raceName.html', {'raceName': raceName, 'raceTrend': raceTrend})
+    
     
 def BusinessNum(request):
     businessNum = Get_OT.netmanager.get_BusinessNum(businessName)
@@ -79,4 +107,8 @@ def EstablishNum(request):
 def DismissNum(request):
     dismissNum = Get_OT.netmanager.get_DismissNum(trendName)
     return render(request, 'dismissNum.html', {'dismissNum': dismissNum})
+
+def RaceNum(request):
+    raceNum = Get_OT.netmanager.getRaceNum(raceName, raceTrend)
+    return render(request, 'raceNum.html', {'raceNum': raceNum})
     

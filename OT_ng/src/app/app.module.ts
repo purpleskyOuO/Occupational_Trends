@@ -6,12 +6,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CompanyNumChartComponent } from './company-num-chart/company-num-chart.component';
 import { CompanyTrendChartComponent } from './company-trend-chart/company-trend-chart.component';
+import { MainPageComponent } from './main-page/main-page.component';
+import { TrendRaceComponent } from './trend-race/trend-race.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CompanyNumChartComponent,
-    CompanyTrendChartComponent
+    CompanyTrendChartComponent,
+    MainPageComponent,
+    TrendRaceComponent
   ],
   imports: [
     BrowserModule,

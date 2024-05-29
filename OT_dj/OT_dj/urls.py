@@ -23,7 +23,9 @@ urlpatterns = [
     path('test/', test_view),
     path('businessName/', getBusinessName),
     path('trendName/', getTrendName),
+    path('raceName/', getRaceName),
     path('businessNum/', BusinessNum),
     path('establishNum/', EstablishNum),
-    path('dismissNum/', DismissNum)
+    path('dismissNum/', DismissNum),
+    path('raceNum/', RaceNum)
 ]

@@ -196,8 +196,8 @@ class NetManager(models.Manager):
             })
         try:
             # 取得該名字的codes
-            # sql = f'SELECT id FROM business_category WHERE {name["category"]}_name="{name["name"]}";'
-            sql = f'SELECT id FROM business_category WHERE detail_name="廚具、衛浴設備安裝工程業";'
+            sql = f'SELECT id FROM business_category WHERE {name["category"]}_name="{name["name"]}";'
+            # sql = f'SELECT id FROM business_category WHERE detail_name="廚具、衛浴設備安裝工程業";'
             cursor.execute(sql)
             rows = cursor.fetchall()
             codes = [r[0] for r in rows]
@@ -231,6 +231,39 @@ class NetManager(models.Manager):
         result = {"result": establishNum}  # 直接构建字典
         return result
         
+    def getRaceNum(self, name, trend):
+        # name = {big:[str], mid:[str], small:[str], detail:[str]}
+        cursor = connection.cursor()
+        
+        startYear = 2013
+        endYear = 2024
+        
+        race_data = []
+        
+        try:
+            for category in name:
+                if len(name[category]) > 0:
+                    for n in name[category]:
+                        sql = f'SELECT id FROM business_category WHERE {category}_name="{n}";'
+                        cursor.execute(sql)
+                        rows = cursor.fetchall()
+                        codes = [r[0] for r in rows]
+                        race_data.append(RaceCount(codes, trend, n))
+            
+            # initial result
+            result = {}        
+            for y in range(startYear, endYear + 1):
+                result[f'"{y}"'] = {}
+                        
+            for r in race_data:
+                for y in range(startYear, endYear + 1):
+                    result[f'"{y}"'][f'"{r[y]["name"]}"'] = r[y]["value"]
+                    
+            # print(result)
+            return result
+                    
+        except Exception as e:
+            print('getRaceNum error:', e)
                      
                    
 class Get_OT(models.Model):
@@ -264,3 +297,27 @@ def CountCompany(codes):
     rows = cursor.fetchall()
     nums = [r[0] for r in rows]
     return sum(nums)
+
+def RaceCount(codes, trendType, name):
+    cursor = connection.cursor()
+    
+    sql = f'SELECT year, SUM(count) FROM `trend_{trendType}_year` WHERE '
+    first = True
+    for code in codes:
+        if first:
+            sql += f'code = "{code}" '
+            first = False
+            continue
+        
+        sql += f'OR code = "{code}" '
+        
+    sql += 'GROUP BY year;'
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    result = [{"year":r[0], "value":int(r[1])} for r in rows if r[0] >= 2013]
+    result_sum = {}
+    for y in range(2013, 2025):
+        value  = sum(r["value"] for r in result if r["year"] <= y)
+        result_sum[y] = {"name": name, "value": value}
+    
+    return result_sum

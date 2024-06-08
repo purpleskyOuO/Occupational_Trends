@@ -8,6 +8,7 @@ import { CompanyNumChartComponent } from './company-num-chart/company-num-chart.
 import { CompanyTrendChartComponent } from './company-trend-chart/company-trend-chart.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { TrendRaceComponent } from './trend-race/trend-race.component';
+import { GraduateTrendChartComponent } from './graduate-trend-chart/graduate-trend-chart.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { TrendRaceComponent } from './trend-race/trend-race.component';
     CompanyNumChartComponent,
     CompanyTrendChartComponent,
     MainPageComponent,
-    TrendRaceComponent
+    TrendRaceComponent,
+    GraduateTrendChartComponent
   ],
   imports: [
     BrowserModule,

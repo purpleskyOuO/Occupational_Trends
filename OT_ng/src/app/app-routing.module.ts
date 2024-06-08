@@ -4,12 +4,14 @@ import {  MainPageComponent } from './main-page/main-page.component';
 import { CompanyNumChartComponent } from './company-num-chart/company-num-chart.component';
 import { CompanyTrendChartComponent } from './company-trend-chart/company-trend-chart.component';
 import { TrendRaceComponent } from './trend-race/trend-race.component';
+import { GraduateTrendChartComponent } from './graduate-trend-chart/graduate-trend-chart.component';
 
 const routes: Routes = [
     { 'path': 'Main_Page', component: MainPageComponent},
     { 'path': 'CompanyNum_Chart', component: CompanyNumChartComponent},
     { 'path': 'CompanyTrend_Chart', component: CompanyTrendChartComponent},
-    { 'path': 'Trend_Race', component: TrendRaceComponent}
+    { 'path': 'Trend_Race', component: TrendRaceComponent},
+    { 'path': 'Graduate_Trend', component: GraduateTrendChartComponent}
 ];
 
 @NgModule({

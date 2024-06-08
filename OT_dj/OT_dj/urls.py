@@ -24,8 +24,10 @@ urlpatterns = [
     path('businessName/', getBusinessName),
     path('trendName/', getTrendName),
     path('raceName/', getRaceName),
+    path('graduateTypeName/', getGraduateTypeName),
     path('businessNum/', BusinessNum),
     path('establishNum/', EstablishNum),
     path('dismissNum/', DismissNum),
-    path('raceNum/', RaceNum)
+    path('raceNum/', RaceNum),
+    path('graduateNum/', GraduateNum)
 ]

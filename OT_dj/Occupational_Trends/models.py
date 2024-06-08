@@ -264,7 +264,43 @@ class NetManager(models.Manager):
                     
         except Exception as e:
             print('getRaceNum error:', e)
-                     
+            
+    def getGraduateNum(self, type, name):
+        cursor = connection.cursor()
+        
+        try:
+            if type == "department":
+                d_names = [name]  
+            else:
+                sql = f'SELECT name FROM department WHERE {type} = "{name}"'
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+                d_names = [r[0] for r in rows]
+                
+            result = [{"year": str(y), "public": 0, "private": 0} for y in range(101, 112)]
+                            
+            for d_name in d_names:
+                sql = f"""
+                    SELECT academic_year, establishment_type, SUM(graduates) FROM `graduate`
+                    WHERE department_name = "{d_name}"
+                    GROUP BY academic_year, establishment_type;
+                    """
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+                
+                for row in rows:
+                    if row[1] == "公立":
+                        # 用相減的來定位對應年分
+                        result[int(row[0]) - 101]["public"] += int(row[2])
+                    elif row[1] == "私立":
+                        # 用相減的來定位對應年分
+                        result[int(row[0]) - 101]["private"] += int(row[2])
+                        
+            return result
+            
+        except Exception as e:
+            print('getGraduateNum error:', e)
+                              
                    
 class Get_OT(models.Model):
     netmanager = NetManager()   

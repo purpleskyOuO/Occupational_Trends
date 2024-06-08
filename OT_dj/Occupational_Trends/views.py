@@ -12,6 +12,8 @@ trendName = {}
 raceName = {}
 
 raceTrend = ""
+graduateType = ""
+graduateName = ""
 
 # Create your views here.
 def test_view(request):
@@ -95,6 +97,31 @@ def getRaceName(request):
         # print(result)
         return render(request, 'raceName.html', {'raceName': raceName, 'raceTrend': raceTrend})
     
+@csrf_exempt
+# @require_POST
+@api_view(['GET', 'POST'])
+def getGraduateTypeName(request):
+    if request.method == 'POST':
+        try:
+            # 解析收到的 JSON 数据
+            data = json.loads(request.body.decode('utf-8'))
+            global graduateType, graduateName
+            graduateType = data['type']
+            graduateName = data['name']
+            # print('data:')
+            # print(data)
+            
+            # 返回成功响应
+            return JsonResponse({'message': 'Post of graduateTypeName created successfully'})
+        except Exception as e:
+            # 处理错误情况
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    elif request.method == 'GET':
+        # print('get')
+        # print(result)
+        return render(request, 'graduateTypeName.html', {'graduateType': graduateType, 'graduateName': graduateName})
+    
     
 def BusinessNum(request):
     businessNum = Get_OT.netmanager.get_BusinessNum(businessName)
@@ -111,4 +138,8 @@ def DismissNum(request):
 def RaceNum(request):
     raceNum = Get_OT.netmanager.getRaceNum(raceName, raceTrend)
     return render(request, 'raceNum.html', {'raceNum': raceNum})
+
+def GraduateNum(request):
+    graduateNum = Get_OT.netmanager.getGraduateNum(graduateType, graduateName)
+    return render(request, 'graduateNum.html', {'graduateNum': graduateNum})
     

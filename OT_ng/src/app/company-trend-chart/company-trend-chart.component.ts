@@ -128,7 +128,7 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
           date: date.getTime(),
           value: t_v
         }
-      )
+      );
 
     });
 

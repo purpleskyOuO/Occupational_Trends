@@ -29,13 +29,16 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  // get data 
+  graduateNum: any[] = [];  // graduateNum = [{year:string, public:number, private:number}]
+
   ngOnInit(): void {
     // post data
-    const postTypeName = {type: "department", name: "資訊工程系"};
+    // const postTypeName = {type: "department", name: "資訊工程系"};
     // const postTypeName = {type: "college", name: "工學院"};
     // const postTypeName = {type: "field", name: "工程、製造及營建"};
     // const postTypeName = {type: "discipline", name: "工程及工程業"};
-    // const postTypeName = {type: "category", name: "電機與電子工程"};
+    const postTypeName = {type: "category", name: "電機與電子工程"};
 
     // post graduate type and name
     this.service.postGraduateTypeName(postTypeName).pipe(
@@ -48,7 +51,17 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
   ngAfterViewInit() {
     // Chart code goes in here
     this.browserOnly(() => {
-      this.roots.push(this.createChart());
+      // get graduate number
+      this.service.getGraduateNum().pipe(
+        map(response => {
+          this.graduateNum = this.reformat_GraduateNum(response);
+          //console.log('response:', response);
+          console.log('graduateNum response:', this.graduateNum);
+
+          let root = this.createChart("chartdiv", this.graduateNum);
+          this.roots.push(root);
+        })
+      ).subscribe();
       
     });
   }
@@ -65,10 +78,10 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
-  createChart(): am5.Root{
+  createChart(chartID: string, data: any[]): am5.Root{
     // Create root element
     // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    let root = am5.Root.new("chartdiv");
+    let root = am5.Root.new(chartID);
 
     // Set themes
     // https://www.amcharts.com/docs/v5/concepts/themes/
@@ -93,21 +106,6 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
     chart.set("scrollbarX", am5.Scrollbar.new(root, {
       orientation: "horizontal"
     }));
-
-    var data: any[] = [{
-      "year": "2021",
-      "public": 2.5,
-      "private": 2.5
-    }, {
-      "year": "2022",
-      "public": 2.6,
-      "private": 2.7
-    }, {
-      "year": "2023",
-      "public": 2.8,
-      "private": 2.9
-    }]
-
 
     // Create axes
     // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
@@ -188,5 +186,34 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
     chart.appear(1000, 100);
     
     return root;
+  }
+
+  reformat_GraduateNum(post: string){
+    var temp:any;
+
+    var re = /&#x27;/gi;
+    temp = post.replace(re, '');
+    temp = temp.replace("[{", '').replace("}]", '');
+    let tempString:string[] = temp.split('}, {');
+
+    let tempList:any[] = [];
+
+    tempString.forEach(e => {
+      let t_list:string[];
+      t_list = e.split(", ");
+
+      var t_year = t_list[0].replace("year: ", '');
+      var t_pubilc = Number(t_list[1].replace("public: ", ""));
+      var t_private = Number(t_list[2].replace("private: ", ""));
+
+      tempList.push({
+        "year": t_year,
+        "public": t_pubilc,
+        "private": t_private
+      });
+    });
+
+    console.log(tempList);
+    return tempList;
   }
 }

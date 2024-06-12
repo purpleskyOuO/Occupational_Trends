@@ -1,0 +1,40 @@
+<div class="dropdowns-wrapper">
+  <div *ngFor="let container of dropdownContainers; let i = index" class="dropdown-container">
+    <select id="myDropdown0" #dropdown0 (change)="onDropdownChange0(dropdown0, i)">
+      <option value="">大分類</option>
+      <option *ngFor="let bigName of container.bigNames" [value]="bigName">{{ bigName }}</option>
+    </select>
+
+    <div class="space"></div>
+
+    <select id="myDropdown1" #dropdown1 (change)="onDropdownChange1(dropdown1, i)">
+      <option value="">中分類</option>
+      <option *ngFor="let midName of container.midNames" [value]="midName">{{ midName }}</option>
+    </select>
+
+    <div class="space"></div>
+
+    <select id="myDropdown2" #dropdown2 (change)="onDropdownChange2(dropdown2, i)">
+      <option value="">小分類</option>
+      <option *ngFor="let smallName of container.smallNames" [value]="smallName">{{ smallName }}</option>
+    </select>
+
+    <div class="space"></div>
+
+    <select id="myDropdown3" #dropdown3 (change)="onDropdownChange3(dropdown3, i)">
+      <option value="">詳細分類</option>
+      <option *ngFor="let detailName of container.detailNames" [value]="detailName">{{ detailName }}</option>
+    </select>
+
+
+    <div class="space"></div>
+    <button class="plus-icon" (click)="addDropdownContainer()">&#x271A;</button>
+  </div>
+
+
+
+  <div *ngFor="let container of dropdownContainers; let i = index">
+    <p>選中的文字：{{ container.selectedOptionText0 }}, {{ container.selectedOptionText1 }}, {{ container.selectedOptionText2 }}, {{container.selectedOptionText3}}</p>
+  </div>
+</div>
+<button class="generate-button" (click)="btn_CreateChart()">建立圖表</button>

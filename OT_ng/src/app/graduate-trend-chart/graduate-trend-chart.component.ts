@@ -33,19 +33,21 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
   graduateNum: any[] = [];  // graduateNum = [{year:string, public:number, private:number}]
 
   ngOnInit(): void {
-    // post data
+    // post data sample
     // const postTypeName = {type: "department", name: "資訊工程系"};
     // const postTypeName = {type: "college", name: "工學院"};
     // const postTypeName = {type: "field", name: "工程、製造及營建"};
     // const postTypeName = {type: "discipline", name: "工程及工程業"};
-    const postTypeName = {type: "category", name: "電機與電子工程"};
+    // const postTypeName = {type: "category", name: "電機與電子工程"};
 
     // post graduate type and name
+    /*
     this.service.postGraduateTypeName(postTypeName).pipe(
       map(response => {
         console.log('Post of graduateTypeName created successfully:', response);
       })
     ).subscribe();
+    */
   }
 
   ngAfterViewInit() {
@@ -195,12 +197,14 @@ export class GraduateTrendChartComponent implements OnInit, AfterViewInit, OnDes
     temp = post.replace(re, '');
     temp = temp.replace("[{", '').replace("}]", '');
     let tempString:string[] = temp.split('}, {');
+    // console.log(tempString);
 
     let tempList:any[] = [];
 
     tempString.forEach(e => {
       let t_list:string[];
       t_list = e.split(", ");
+      // console.log(t_list);
 
       var t_year = t_list[0].replace("year: ", '');
       var t_pubilc = Number(t_list[1].replace("public: ", ""));

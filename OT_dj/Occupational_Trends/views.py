@@ -80,9 +80,8 @@ def getRaceName(request):
         try:
             # 解析收到的 JSON 数据
             data = json.loads(request.body.decode('utf-8'))
-            global raceName, raceTrend
-            raceName = data['name']
-            raceTrend = data['trend']
+            global raceName
+            raceName = data
             # print('data:')
             # print(data)
             
@@ -95,7 +94,31 @@ def getRaceName(request):
     elif request.method == 'GET':
         # print('get')
         # print(result)
-        return render(request, 'raceName.html', {'raceName': raceName, 'raceTrend': raceTrend})
+        return render(request, 'raceName.html', {'raceName': raceName})
+    
+@csrf_exempt
+# @require_POST
+@api_view(['GET', 'POST'])
+def getRaceTrend(request):
+    if request.method == 'POST':
+        try:
+            # 解析收到的 JSON 数据
+            data = json.loads(request.body.decode('utf-8'))
+            global raceTrend
+            raceTrend = data["trend"]
+            # print('data:')
+            # print(data)
+            
+            # 返回成功响应
+            return JsonResponse({'message': 'Post of raceTrend created successfully'})
+        except Exception as e:
+            # 处理错误情况
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    elif request.method == 'GET':
+        # print('get')
+        # print(result)
+        return render(request, 'raceTrend.html', {'raceTrend': raceTrend})
     
 @csrf_exempt
 # @require_POST
@@ -142,4 +165,11 @@ def RaceNum(request):
 def GraduateNum(request):
     graduateNum = Get_OT.netmanager.getGraduateNum(graduateType, graduateName)
     return render(request, 'graduateNum.html', {'graduateNum': graduateNum})
+
+def BusinessCategory(requset):
+    businessCategory = Get_OT.netmanager.getBusinessCategory()
+    return render(requset, 'businessCategory.html', {'businessCategory': businessCategory})
     
+def Departments(request):
+    departments = Get_OT.netmanager.getDepartments()
+    return render(request, 'departments.html', {'departments': departments})

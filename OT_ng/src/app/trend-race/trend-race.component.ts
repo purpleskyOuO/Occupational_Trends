@@ -10,14 +10,14 @@ import { ServicesService } from '../services.service';
 import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
-import { Observable } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-trend-race',
   templateUrl: './trend-race.component.html',
   styleUrl: './trend-race.component.css'
 })
-export class TrendRaceComponent {
+export class TrendRaceComponent implements OnInit, AfterViewInit, OnDestroy{
   private roots: am5.Root[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private service: ServicesService) {}
@@ -74,7 +74,7 @@ export class TrendRaceComponent {
       this.roots.push(root);*/
 
       try {
-        const establish_Data = await this.getRaceNum(name, "establish").toPromise();
+        const establish_Data = await lastValueFrom(this.getRaceNum("establish"));
         if (establish_Data) {
           root = this.createChart("establish_chartdiv", establish_Data);
           this.roots.push(root);
@@ -82,7 +82,7 @@ export class TrendRaceComponent {
           console.error("Failed to get establish data");
         }
     
-        const dismiss_Data = await this.getRaceNum(name, "dismiss").toPromise();
+        const dismiss_Data = await lastValueFrom(this.getRaceNum("dismiss"));
         if (dismiss_Data) {
           let root = this.createChart("dismiss_chartdiv", dismiss_Data);
           this.roots.push(root);
@@ -155,16 +155,10 @@ export class TrendRaceComponent {
     return result;
   }*/
 
-  getRaceNum(name: {big: string[], mid: string[], small: string[], detail: string[]}, trend:string): 
-  Observable<{[key: string]:{[key: string]: number}}> {
-    const post_RaceTrend = {
-      name: name,
-      trend: trend
-    };
-
-    return this.service.postRaceName(post_RaceTrend).pipe(
+  getRaceNum(trend: string): Observable<{ [key: string]: { [key: string]: number } }> {
+    return this.service.postRaceTrend({"trend": trend}).pipe(
       map(response => {
-        console.log('Post of raceName created successfully:', response);
+        console.log('Post of raceTrend created successfully:', response);
       }),
       concatMap(() => this.service.getRaceNum().pipe(
         map(response => {
@@ -174,7 +168,7 @@ export class TrendRaceComponent {
         })
       ))
     );
-}
+  }
 
   createChart(chartID: string, allData: {[key: string]:{[key: string]: number}}): am5.Root{
 

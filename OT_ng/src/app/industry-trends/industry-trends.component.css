@@ -111,7 +111,39 @@
   }
   
   /* -------- Navigation ------- */
+  /* -------- Dropdown ------- */
+  .dropdown-container {
+    display: flex;
+    height: 50px;
+    /* padding: 10px; */
+    /* background-color: #2a60935c; */
+    flex-direction:row;
+    margin-bottom: 2%;
+    flex-wrap: nowrap;
+    justify-content: center;
   
+    align-content: flex-start;
+  }
+  
+  select {
+    border-radius: 2cap;
+    /* border-top-left-radius: 1cap; */
+  }
+  
+  #myDropdown0, #myDropdown1, #myDropdown2, #myDropdown3 {
+    width: 15%;
+    color: #4d4d4db4;
+    font-weight: bolder;
+  }
+  
+  .plus-icon {
+    display: flex;
+    align-items: center;  /* 垂直置中 */
+    justify-content: center;  /* 水平置中 */
+    width: 5cap;
+    border-radius: 5cap;
+  }
+  /* -------- Dropdown ------- */
   
   .flex-container {
     display: flex;
@@ -136,4 +168,16 @@
     color: #ffffff;
     font-size: 2rem;
     padding:10px;
+  }
+  
+  .generate-button {
+    width: 10%;
+    height: 30px;
+    border-radius: 10px;
+    background-color: rgb(90, 90, 210);
+    color: #fff;
+    font-weight: bolder;
+    position: relative;
+    right: 0%;
+    left: 45%;
   }

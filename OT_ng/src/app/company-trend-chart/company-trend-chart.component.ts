@@ -36,11 +36,16 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
   dismissNum:any[] = []  // dismissNum = [{year:number, month:number, value:number}]
   establishNum:any[] = []  // establishNum = [{year:number, month:number, value:number}]
 
+  // data sample
+  /*
   // post Trend name
   name = "廚具、衛浴設備安裝工程業";
   category = 'detail';
+  */
 
   ngOnInit(): void {
+    // data sample
+    /*
     const postTrendName = {
       name: this.name,
       category: this.category
@@ -52,6 +57,7 @@ export class CompanyTrendChartComponent implements OnInit, AfterViewInit, OnDest
         console.log('Post of trendName created successfully:', response);
       })
     ).subscribe();
+    */
   }
 
   ngAfterViewInit() {

@@ -21,6 +21,10 @@ export class ServicesService {
     return this.httpClient.post<any>('http://127.0.0.1:8000/raceName/', data);
   }
 
+  postRaceTrend(data: any): Observable<any> {
+    return this.httpClient.post<any>('http://127.0.0.1:8000/raceTrend/', data);
+  }
+
   postGraduateTypeName(data: any): Observable<any> {
     return this.httpClient.post<any>('http://127.0.0.1:8000/graduateTypeName/', data);
   }
@@ -44,5 +48,13 @@ export class ServicesService {
 
   getGraduateNum(): Observable<any> {
     return this.httpClient.get('http://127.0.0.1:8000/graduateNum/', { responseType: 'text' });
+  }
+
+  getBusinessCategory(): Observable<any> {
+    return this.httpClient.get('http://127.0.0.1:8000/businessCategory/', { responseType: 'text' });
+  }
+
+  getDepartments(): Observable<any> {
+    return this.httpClient.get('http://127.0.0.1:8000/departments/', { responseType: 'text' });
   }
 }

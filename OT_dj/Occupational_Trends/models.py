@@ -300,7 +300,47 @@ class NetManager(models.Manager):
             
         except Exception as e:
             print('getGraduateNum error:', e)
-                              
+ 
+    def getBusinessCategory(self):
+        cursor = connection.cursor()
+        
+        try:
+            # 取得職業種類並傳回
+            sql = 'SELECT big_name, mid_name, small_name, detail_name FROM `business_category`;'
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            # result = [{"big_name":str, "mid_name":str, "small_name":str, "detail_name":str}]
+            result = [{"big_name": r[0],
+                       "mid_name": r[1],
+                       "small_name": r[2],
+                       "detail_name": r[3]
+                       } for r in rows]
+            
+            return result
+            
+        except Exception as e:
+            print('get business category error: ', e) 
+            
+    def getDepartments(self):
+        cursor = connection.cursor()
+        
+        try:
+            # 取得職業種類並傳回
+            sql = 'SELECT name, college, field, discipline, category FROM `department`;'
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            # result = [{"name":str, "college":str, "field":str, "discipline":str, "category":str}]
+            result = [{"name": r[0],
+                       "college": r[1],
+                       "field": r[2],
+                       "discipline": r[3],
+                       "category": r[4]
+                       } for r in rows]
+            
+            return result
+            
+        except Exception as e:
+            print('get business category error: ', e)                             
                    
 class Get_OT(models.Model):
     netmanager = NetManager()   
@@ -319,6 +359,8 @@ def CountCompany(codes):
     
     # 用檢視表來查詢較快
     # 取得個別code的數量
+    # 因table資料太多查詢緩慢暫時用其他方法
+    """
     sql = 'SELECT count FROM company_number WHERE '
     first = True
     for code in codes:
@@ -332,6 +374,28 @@ def CountCompany(codes):
     cursor.execute(sql)
     rows = cursor.fetchall()
     nums = [r[0] for r in rows]
+    """
+    nums = []
+    
+    for code in codes:
+        
+        # 無該項資料跳過
+        sql = f'SELECT code FROM `company_category` WHERE code = "{code}" GROUP BY code;'
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        if row is None:
+            continue
+        
+        sql = f"""
+        SELECT COUNT(*) FROM `company_{code}` 
+        WHERE status = '核准登記' OR status = '核准設立' 
+        GROUP BY status;
+        """
+        
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        nums.extend([r[0] for r in rows])
+    
     return sum(nums)
 
 def RaceCount(codes, trendType, name):

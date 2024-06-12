@@ -34,13 +34,18 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit, OnDestro
   // occupationNum = [{occupation:string, value:number}]
   occupationNum:any[] = []
 
-  //post business name
+  
+  //data sample
+  /*
   b_bigName = ["文化、運動、休閒及其他服務業", "農、林、漁、牧業"];
   b_midName = ["陸上運輸業"];
   b_smallName = ["石油製品、燃料零售業"];
   b_detailName = ["室內輕鋼架工程業", "水產品批發業", "日常用品批發業", "日常用品零售業", "一般廣告服務業"];
+  */
 
   ngOnInit(): void {
+    // data sample
+    /*
     const postBusinessName = {
       big: this.b_bigName,
       mid: this.b_midName,
@@ -54,8 +59,8 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit, OnDestro
         console.log('Post of businessName created successfully:', response);
       })
     ).subscribe();
+    */
 
-    
   }
 
   ngAfterViewInit() {
@@ -216,17 +221,6 @@ export class CompanyNumChartComponent implements OnInit, AfterViewInit, OnDestro
         this.root.dispose();
       }
     });
-  }
-
-  reformatPost(post: string){
-    var temp:any;
-
-    var re = /&#x27;/gi;
-    temp = post.replace(re, '');
-    re = /result: /gi;
-    temp = temp.replace(re, '');
-    temp = temp.replace("{", '').replace("}", '').replace("[", '').replace("]", '');
-    return temp.split(", ");
   }
 
   reformat_OccuaptionNum(post: string){
